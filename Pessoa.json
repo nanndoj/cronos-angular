@@ -1,0 +1,7 @@
+[
+		  {"id": "567231230123", "nome": "Tedesco", "sobrenome": "Santos", "track": "files/californication.mp3"},
+		  {"id": "123110129123","nome": "Thiago", "sobrenome": "Filho", "track": "files/smells-like-teen-spirit.mp3"},
+		  {"id": "75673312233","nome": "José", "sobrenome": "Jenuino", "track": "files/smells-like-teen-spirit.mp3"},
+		  {"id": "12312300129123","nome": "Foo number 2", "sobrenome": "Bar", "track": "files/smells-like-teen-spirit.mp3"},
+		  {"id": "567231229123","nome": "Fábio Santos Souza", "sobrenome": "Santos", "track": "files/smells-like-teen-spirit.mp3"}
+]

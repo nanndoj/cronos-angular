@@ -1,0 +1,25 @@
+<nav>
+  <button type="button" class="btn btn-primary" ng-hide="inserting" ng-click="startInserting()">New</button>
+  <button type="button" class="btn btn-danger" ng-show="inserting" ng-click="cancel()">Cancel</button>
+</nav>
+<table class="table table-hover table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th ng-repeat="headerName in headers">{{headerName}}</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-show="inserting">
+          <td>#</th>
+          <td ng-repeat = "fieldName in fields"><input type="text" ng-model="transitient[fieldName]"/></td>
+          <td class=".col-md-1"><button type="button" ng-click="doInsert()" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i></button></td>
+        </tr>
+        <tr ng-repeat="rowData in data[dataset].data track by $index">
+          <td>{{$index}}</th>
+          <td ng-repeat = "fieldName in fields"><a href="javacript:;" editable-text="rowData[fieldName]" onaftersave="doUpdate(rowData)">{{rowData[fieldName]}}</a></td>
+          <td class=".col-md-1"><button type="button" ng-click="doDelete(rowData[data[dataset].key])" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i></button></td>
+        </tr>
+      </tbody>
+</table>
