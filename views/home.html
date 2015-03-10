@@ -1,0 +1,16 @@
+<!-- CUSTOM APP CODE START    -->     
+<cronos-dataset name="Carros" key="id"></cronos-dataset>
+
+<form name="CarrosForm" cronos-dataset="Carros">
+    Nome: <input type="text" ng-model="data.nome" />
+    Sobrenome: <input type="text" ng-model="data.sobrenome" />
+    Ano: <input type="text" ng-model="data.track" />
+    <button class="btn btn-success">Inserir</button>
+</form>
+
+<cronos-table 
+	dataset="Carros" 
+ 	form="CarrosForm"
+    headers = "['Marca', 'Modelo', 'Ano']"
+    fields = "['nome', 'sobrenome', 'track']">
+</cronos-table>

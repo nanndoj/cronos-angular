@@ -1,1 +1,4 @@
-angular.module('cronos.controllers', []);
+(function($app) {
+    angular.module('cronos.controllers', []);  
+    // Your code
+}(app));
