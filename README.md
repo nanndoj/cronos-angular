@@ -42,4 +42,4 @@ The directive will create a Provider that can be used in controllers
        });
        
        
-   });
+    });
