@@ -1,0 +1,6 @@
+    <ui-select ng-model="data[dataset].activeRow" theme="select2" ng-disabled="disabled" style="min-width: 300px;">
+    <ui-select-match placeholder="Select an option...">{{data[dataset].activeRow[displayField]}}</ui-select-match>
+    <ui-select-choices repeat="element in data[dataset].data | propsFilter: {search:$select, params:filterParams}">
+      <div ng-bind-html="element[displayField] | highlight: $select.search"></div>
+    </ui-select-choices>
+  </ui-select>

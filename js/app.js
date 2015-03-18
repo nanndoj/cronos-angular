@@ -8,9 +8,11 @@ var app = (function() {
     // 'cronos.dataset' is found in /components/js/dataset.js
     return angular.module('Cronos', [
     	'ngRoute',
-	    'cronos.controllers', 
-	    'cronos.dataset', 
-	    'xeditable'
+      'ngResource',
+      'ngSanitize',
+	    'cronos.controllers', ,
+	    'cronos.dataset',
+      'ui.select'
     ])
     .config(['$routeProvider', function($routeProvider) {
   	    // Route

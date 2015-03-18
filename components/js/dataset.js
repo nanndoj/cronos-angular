@@ -4,7 +4,7 @@
   /**
   * Global factory responsible for managing all datasets
   */
-  .factory('DatasetManager', ['$http','$q', function($http, $q) {
+  .factory('DatasetManager', ['$http','$q', '$resource', '$timeout','$rootScope', function($http, $q, $resource, $timeout, $rootScope) {
      // Global dataset List
     this.datasets = {};
 
@@ -13,33 +13,69 @@
     */
     var DataSet = function(name) {
       // Publiic members
-      this.data = null;
+      this.data = [];
       this.name = name;
       this.key = null;
-      this.activeRow = null;
-      this.inserting = false;
+      this.endpoint = null;
+      this.activeRow = {};
+      this.inserting = false; 
       this.editing = false;
+      this.fetchSize = 2;
+      this.observers = [];
 
       // Private members
-      this.cursor = 0;
+      var cursor = 0;
+      var service = null;
+      var pageIndex = 0;
+
+      this.init = function() {
+        this.endpoint = (this.endpoint) ? this.endpoint : "";
+
+        service = $resource(this.endpoint + '/:entry/:id', 
+        { 
+          entry : this.name,
+          id: '@' + this.key 
+        }, 
+        {
+          update: {
+            method: 'PUT' // this method issues a PUT request
+          },
+          save: {
+            method: 'POST' // this method issues a POST request
+          },
+          remove: {
+            method: 'DELETE' 
+          }
+        });
+
+        // Start watching for changes in
+        // activeRow to notify observers
+        $rootScope.$watch(function(){
+          return this.activeRow;
+        }.bind(this), function (activeRow) {
+          if(activeRow) {
+            this.notifyObservers(activeRow);         
+          }
+        }.bind(this),true);
+      }
 
       //Public methods
       /**
       * Append a new value to the end of this dataset.
       */ 
       this.insert = function (obj) {
-        return $q(function (resolve, reject) {
-          this.data.push(obj);
-          resolve(obj);
-        }.bind(this));
+        service.save(obj);
+        this.data.push(obj);
       };
 
       /**
       * Uptade a value into this dataset by using the dataset key to compare
       * the objects
       */ 
-      this.update = function (obj) {
-
+      this.update = function (obj, callback) {
+        var keyObj = {}
+        keyObj[this.key] = obj[this.key];
+        service.update(keyObj, obj);
       };
 
       /**
@@ -49,7 +85,10 @@
       this.remove = function (id) {
         for(var i = 0; i < this.data.length; i++) {
               if(this.data[i][this.key] === id) {
-                  this.data.splice(i,1);
+                  var obj = this.data.splice(i,1);
+                  var keyObj = {}
+                  keyObj[this.key] = obj[this.key];
+                  service.delete(keyObj, obj);
               }
           }
       };
@@ -86,19 +125,85 @@
       /**
       *  Moves the cursor to the specified item
       */
-      this.goTo = function (index) {
-        if(index >= this.data.length || index < 0) throw "Dataset Overflor Error";
-        cursor = index;
-        this.activeRow = this.data[cursor];
-        return this;
+      this.goTo = function (rowId) {
+        for(var i = 0; i < this.data.length; i++) {
+          if(this.data[i][this.key] === rowId) {
+            cursor = i;
+            this.activeRow = this.data[cursor];
+            return this.activeRow;
+          }
+        }
       };
 
-      this.getCursor = function() {
+      /**
+      *  Get the current cursor index
+      */
+      this.getCursor = function () {
         return cursor;
+      };
+
+      /**
+      *  Get the current row data
+      */
+      this.current = function () {
+        return this.activeRow || this.data[0];
       }
 
-      this.current = function() {
-        return this.activeRow || this.data[0];
+      /**
+      *  Fetch all data from the server
+      */
+      this.fetch = function (props) {
+        // Get some fake testing data
+        var endpoint = (this.endpoint) ? this.endpoint : "";
+
+        var resource = $resource(endpoint + "/:entry", { 
+          entry: this.name 
+        });
+
+        var query = resource.query(props);
+
+        query.$promise.then(function (data) {
+            this.data = data;
+            this.activeRow = {};
+            this.pageIndex++;
+        }.bind(this));
+      }
+
+      /**
+      * Asynchronously notify observers 
+      */
+      this.notifyObservers = function () {
+        for(var key in this.observers) {
+          if(this.observers.hasOwnProperty(key)) {
+            var dataset = this.observers[key];
+            $timeout(function() {
+              dataset.notify.call(dataset, this.activeRow);
+            }.bind(this),1);  
+          }
+          
+        }
+        
+      }
+
+      this.notify = function (activeRow) {
+        // Parse the filter using regex
+        // to identify {params}
+        var filter = this.watchFilter;
+        var pattern = /\{([A-z][A-z|0-9]*)\}/gim;
+
+        // replace all params found by the 
+        // respectiveValues in activeRow
+        filter = filter.replace(pattern,function(a,b) {
+          return activeRow[b];
+        })
+        
+        this.fetch({
+          q: filter
+        });
+      }
+
+      this.addObserver = function(observer) {
+        this.observers.push(observer);
       }
 
     };
@@ -110,14 +215,35 @@
         this.datasets[dataset.name] = dataset;
     },
 
-    this.fetchData = function (attrs) {
+    /**
+    * Initialize a new dataset
+    */
+    this.initDataset = function (props) {
         // Get some fake testing data
-        return $http.get('data/'+ attrs.name + '.json?_=' + new Date().getTime()).then(function(returnObj) {
-            var dts = new DataSet(attrs.name);
-            dts.data = returnObj.data;
-            dts.key = attrs.key;
-            this.storeDataset(dts);
-        }.bind(this));
+        var endpoint = (props.endpoint) ? props.endpoint : "";
+
+        var dts = new DataSet(props.name);
+        dts.key = props.key;
+        dts.endpoint = props.endpoint;
+        dts.init();
+        this.storeDataset(dts);
+
+        if(!props.lazy) {
+          dts.fetch();
+        }
+
+        if(props.watch) {
+          this.registerObserver(props.watch, dts);
+          dts.watchFilter = props.watchFilter;
+        }
+        
+    }
+
+    /**
+    * Register a dataset as an observer to another one
+    */
+    this.registerObserver = function (targetName, dataset) {
+      this.datasets[targetName].addObserver(dataset);
     }
 
     return this;
@@ -131,15 +257,18 @@
       restrict: 'E',
       template: '',
       link: function(scope, element, attrs) {
-        var fetchData = function () {
-          DatasetManager.fetchData(attrs)
+        var init = function () {
+          DatasetManager.initDataset({
+            name: attrs.name,
+            key: attrs.key,
+            endpoint: attrs.endpoint,
+            lazy: (attrs.hasOwnProperty('lazy') && attrs.lazy === "") || attrs.lazy === "true",
+            watch: attrs.watch,
+            watchFilter: attrs.watchFilter
+          });
         };
 
-        if(attrs.realtime) {
-          setInterval(fetchData, 1000);
-        }
-
-        fetchData();
+        init();
       }
     };
   }]);
