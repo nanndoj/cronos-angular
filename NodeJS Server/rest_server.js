@@ -15,19 +15,19 @@ var data = [
 ];
 
 var acessorios = [
-		  {"id": "567231231234", "idCarro": "127231230123", "nome": "Rodas de Liga Leve"},
-		  {"id": "547231654319", "idCarro": "127231230123", "nome": "Tração 4X4"},
-		  {"id": "127456787938", "idCarro": "127231230123", "nome": "Controle de Velocidade"},
-		  {"id": "098712323824", "idCarro": "927231230123", "nome": "Portas Automáticas"},
-		  {"id": "912342430239", "idCarro": "927231230123", "nome": "GPS de Fábrica"}
+		  {"id": "567231231234", "idCarro": "127231230123", "tipoAcessorio" : "247231254319", "nome": "Rodas de Liga Leve"},
+		  {"id": "547231654319", "idCarro": "127231230123", "tipoAcessorio" : "327456387938", "nome": "Tração 4X4"},
+		  {"id": "127456787938", "idCarro": "127231230123", "tipoAcessorio" : "247231254319", "nome": "Controle de Velocidade"},
+		  {"id": "098712323824", "idCarro": "927231230123", "tipoAcessorio" : "498712423824", "nome": "Portas Automáticas"},
+		  {"id": "912342430239", "idCarro": "927231230123", "tipoAcessorio" : "512342530239", "nome": "GPS de Fábrica"}
 ];
 
-var versao = [
-      {"id": "167231131234", "idAcessorio": "547231654319", "nome": "Turbo Flex 2.0"},
-      {"id": "247231254319", "idAcessorio": "547231654319", "nome": "Turbo Diesel 5.4"},
-      {"id": "327456387938", "idAcessorio": "547231654319", "nome": "Gasolina 3.0"},
-      {"id": "498712423824", "idAcessorio": "098712323824", "nome": "Fun 1.4"},
-      {"id": "512342530239", "idAcessorio": "098712323824", "nome": "Joy 1.6"}
+var tipoAcessorio = [
+      {"id": "167231131234", "nome": "Inteno"},
+      {"id": "247231254319", "nome": "Externo"},
+      {"id": "327456387938", "nome": "Motor"},
+      {"id": "498712423824", "nome": "Painel"},
+      {"id": "512342530239", "nome": "Carroceria"}
 ];
 
 // apply this rule to all requests accessing any URL/URI
@@ -48,6 +48,13 @@ app.get('/api/Carros', function (req, res) {
   res.setHeader('Access-Control-Allow-Origin','*');
   
   res.send(data);
+});
+
+app.get('/api/TipoAcessorio', function (req, res) {
+  res.setHeader('content-type','application/json');
+  res.setHeader('Access-Control-Allow-Origin','*');
+  
+  res.send(tipoAcessorio);
 });
 
 app.get('/api/Acessorios', function (req, res) {
@@ -98,13 +105,35 @@ app.post('/api/Carros', function (req, res) {
 });
 
 app.delete('/api/Carros/:id', function (req, res) {
-  console.log(req.params.id);
-  console.log(req.body);
+  for(var i = 0; i < data.length; i++) {
+    if(req.params.id === data[i].id) {
+      data.splice(i,1);
+    }
+  }
+});
+
+app.delete('/api/Acessorios/:id', function (req, res) {
+  for(var i = 0; i < acessorios.length; i++) {
+    if(req.params.id === acessorios[i].id) {
+      acessorios.splice(i,1);
+    }
+  }
 });
 
 app.put('/api/Carros/:id', function (req, res) {
-  console.log(req.params.id);
-  console.log(req.body);
+  for(var i = 0; i < data.length; i++) {
+    if(req.params.id === data[i].id) {
+      data[i] = req.body;
+    }
+  }
+});
+
+app.put('/api/Acessorios/:id', function (req, res) {
+ for(var i = 0; i < acessorios.length; i++) {
+    if(req.params.id === acessorios[i].id) {
+      acessorios[i] = req.body;
+    }
+  }
 });
 
 // fulfils pre-flight/promise request

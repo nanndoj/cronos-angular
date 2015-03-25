@@ -11,8 +11,7 @@ var app = (function() {
       'ngResource',
       'ngSanitize',
 	    'cronos.controllers', ,
-	    'cronos.dataset',
-      'ui.select'
+	    'cronos.dataset'
     ])
     .config(['$routeProvider', function($routeProvider) {
   	    // Route

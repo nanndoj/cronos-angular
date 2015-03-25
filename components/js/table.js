@@ -22,13 +22,10 @@
 
         var activeRow = null;
 
-        if($scope.form) {
-                $("#" + $scope.form).modal("hide");
-        }
 
         $scope.isActive = function (rowId) {
             var dataset = $scope.data[this.dataset];
-            return dataset.activeRow && dataset.activeRow[dataset.key] == rowId;
+            return dataset.active && dataset.active[dataset.key] == rowId;
         }
 
         $scope.selectRow = function (rowId) {
@@ -57,12 +54,7 @@
 
         $scope.startInserting = function () {
             $scope.data[this.dataset].inserting = true;
-
-            if($scope.form) {
-                $("#" + $scope.form).modal("show");
-            } else {
-                this.inserting = true;
-            }
+            $scope.data[this.dataset].active = {};
         }
 
         $scope.cancel = function () {
@@ -73,11 +65,7 @@
         $scope.doEdit = function (rowId) {
             var dataset = $scope.data[this.dataset];
             dataset.goTo(rowId);
-
-            if($scope.form) {
-                $scope.data[this.dataset].editing = true;
-                $("#" + $scope.form).modal("show");
-            }
+            dataset.editing = true;
         }
     }]);
 }(app));

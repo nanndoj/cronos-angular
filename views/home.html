@@ -1,121 +1,80 @@
 <!-- CUSTOM APP CODE START    -->
 
 <!-- DATASET DEFINITION -->
-<cronos-dataset name="Carros" key="id" endpoint="http://localhost:3000/api"></cronos-dataset>
-
-<cronos-dataset 
-		name="Acessorios" 
+	<datatable 
+		name="Carros1"
+		entity="Carros" 
 		key="id" 
-		endpoint="http://localhost:3000/api" 
-		watch="Carros"
-		watch-filter="idCarro={id}"
-		
-></cronos-dataset>
+		endpoint="http://localhost:3000/api"
+		rows-per-page="20"
+		append="true"
+	></datatable>
 
-<cronos-dataset 
-		name="Versao"
-		key="id" 
-		endpoint="http://localhost:3000/api" 
-		watch="Acessorios"
-		watch-filter="idAcessorio={id}"
-></cronos-dataset>
+	<datatable 
+			name="Acessorios1"
+			entity="Acessorios"
+			key="id" 
+			endpoint="http://localhost:3000/api" 
+			watch="Carros1"
+			watch-filter="idCarro={id}"
+	></datatable>
+
+<!-- END DATASET DEFINITION -->
 
 <!-- VISUAL COMPONENTS -->
-<cronos-select dataset="Carros" value-field="id" display-field="nome"></cronos-select>
+	<div class="sidebar animate" ng-class="{visible: Carros1.editing || Carros1.inserting}">
+		<h2>Carro</h2>
+		<form>
+		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Carros1.previous()" ng-disabled="!Carros1.hasPrevious()">Anterior</button>
+		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Carros1.next()" ng-disabled="!Carros1.hasNext()">Próximo</button>
+		  <div class="form-group">
+		    <label for="exampleInputEmail1">Nome</label>
+		    <input type="text" class="form-control" id="name" ng-model="Carros1.active.nome">
+		  </div>
+		  <div class="form-group">
+		    <label for="exampleInputPassword1">Modelo</label>
+		    <input type="text" class="form-control" id="model" ng-model="Carros1.active.sobrenome">
+		  </div>
+		  <div class="form-group">
+		    <label for="exampleInputPassword1">Modelo</label>
+		    <input type="text" class="form-control" id="year" ng-model="Carros1.active.ano">
+		  </div>
+		</form>
+		<button type="button" class="btn btn-default" ng-click="Carros1.post()">Gravar</button>
+		<button type="button" class="btn btn-default" ng-click="Carros1.cancel()">Fechar</button>
+	</div>
 
-<cronos-table 
-	dataset="Carros" 
- 	form="CarrosForm"
-    headers = "['Marca', 'Modelo', 'Ano']"
-    fields = "['nome', 'sobrenome', 'ano']">
-</cronos-table>
+	<div class="sidebar animate" ng-class="{visible: Acessorios1.editing || Acessorios1.inserting}">
+		<h2>Acessório</h2>
+		<form>
+		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Acessorios1.previous()" ng-disabled="!Acessorios1.hasPrevious()">Anterior</button>
+		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Acessorios1.next()" ng-disabled="!Acessorios1.hasNext()">Próximo</button>
+		  <div class="form-group">
+		    <label for="exampleInputEmail1">Nome</label>
+		    <input type="text" class="form-control" id="name" ng-model="Acessorios1.active.nome">
+		  </div>
+		  <div class="form-group">
+		    <label for="exampleInputPassword1">Carro</label>
+		     <select ng-options="item.id as item.nome for item in Carros1.data" ng-model="Acessorios1.active.idCarro">
+		     </select>
+		  </div>
+		</form>
+		<button type="button" class="btn btn-default" ng-click="Acessorios1.post()">Gravar</button>
+		<button type="button" class="btn btn-default" ng-click="Acessorios1.cancel()">Fechar</button>
+	</div>
+	
+	<cronos-table
+		dataset="Carros1"
+	    headers = "['Marca', 'Modelo', 'Ano']"
+	    fields = "['nome', 'sobrenome', 'ano']"
+	    onclickRow="">
+	</cronos-table>
 
-<cronos-table 
-	dataset="Acessorios"
-	form="AcessoriosForm" 
-    headers = "['Registro', 'Descricao']"
-    fields = "['id', 'nome']">
-</cronos-table>
-
-<modal title="Carro" id="CarrosForm">
-    <form class="form-horizontal" cronos-dataset="Carros">
-		<fieldset>
-
-			<!-- Text input-->
-			<div class="form-group">
-			  <label class="col-md-4 control-label" for="marca">Marca</label>  
-			  <div class="col-md-4">
-			  <input id="marca" name="marca" type="text" placeholder="Ex.: GM" class="form-control input-md" ng-model="data.nome">
-			    
-			  </div>
-			</div>
-
-			<!-- Password input-->
-			<div class="form-group">
-			  <label class="col-md-4 control-label" for="modelo">Modelo</label>
-			  <div class="col-md-4">
-			    <input id="modelo" name="modelo" type="text" placeholder="Ex.: Celta" class="form-control input-md" ng-model="data.sobrenome">
-			    
-			  </div>
-			</div>
-
-			<!-- Text input-->
-			<div class="form-group">
-			  <label class="col-md-4 control-label" for="ano">Ano</label>  
-			  <div class="col-md-4">
-			  <input id="ano" name="ano" type="text" placeholder="ano" class="form-control input-md" ng-model="data.ano">
-			    
-			  </div>
-			</div>
-
-			<div class="form-group">
-			   <label class="col-md-4 control-label"></label>  
-			   <div class="col-md-4">
-			   		<button class="btn btn-primary" ng-click="postUpdates() " onclick="return false">OK</button>
-			   		<button class="btn btn-default" ng-click="cancelUpdates()" onclick="return false">Cancelar</button>
-			   </div>  
-			</div>
-			</div>
-		</fieldset>
-	</form>
-</modal>
-
-<modal title="Acessórios" id="AcessoriosForm" visible="true">
-    <form class="form-horizontal" cronos-dataset="Acessorios">
-		<fieldset>
-
-			<!-- Text input-->
-			<div class="form-group">
-			  <label class="col-md-4 control-label" for="marca">ID</label>  
-			  <div class="col-md-4">
-			  <input id="id_acessorio" name="id_acessorio" type="text" placeholder="Ex.: GM" class="form-control input-md" ng-model="data.id">
-			  </div>
-			</div>
-
-			<!-- Text input-->
-			<div class="form-group">
-			  <label class="col-md-4 control-label" for="modelo">Nome Acessorio</label>
-			  <div class="col-md-4">
-			    <input id="nome_acessorio" name="nome_acessorio" type="text" placeholder="Nome" class="form-control input-md" ng-model="data.nome">
-			    
-			  </div>
-			</div>
-
-			<!-- Text input-->
-			<div class="form-group">
-			  <label class="col-md-4 control-label" for="ano">carro</label>  
-			  <div class="col-md-4">
-			  <cronos-select dataset="Carros" value-field="id" display-field="nome" ng-model="data.idCarro"></cronos-select>
-			  </div>
-			</div>
-
-			<div class="form-group">
-			   <label class="col-md-4 control-label"></label>  
-			   <div class="col-md-4">
-			   		<button class="btn btn-primary" ng-click="postUpdates() " onclick="return false">OK</button>
-			   		<button class="btn btn-default" ng-click="cancelUpdates()" onclick="return false">Cancelar</button>
-			   </div>  
-			</div>
-		</fieldset>
-	</form>
-</modal>
+	Acessórios: </br>
+	<cronos-table 
+		dataset="Acessorios1"
+		form="AcessoriosForm" 
+	    headers = "['Registro', 'Descricao']"
+	    fields = "['id', 'nome']">
+	</cronos-table>
+<!-- END VISUAL COMPONENTS -->
