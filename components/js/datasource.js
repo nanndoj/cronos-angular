@@ -1,5 +1,5 @@
 (function($app) {
-  angular.module('cronos.dataset', [])
+  angular.module('cronos.datasource', [])
 
   /**
   * Global factory responsible for managing all datasets
@@ -66,8 +66,9 @@
       * Append a new value to the end of this dataset.
       */ 
       this.insert = function (obj) {
-        service.save(obj);
-        this.data.push(obj);
+        service.save(obj).$promise.then(function(obj) {
+          this.data.push(obj);
+        }.bind(this));
       };
 
       /**
@@ -77,13 +78,13 @@
       this.update = function (obj, callback) {
         var keyObj = {}
         keyObj[this.key] = obj[this.key];
-        service.update(keyObj, obj);
-
-        this.data.forEach(function(currentRow) {
-          if(currentRow[this.key] === obj[this.key]) {
-            this.copy(obj,currentRow);
-          }
-        }.bind(this));
+        service.update(keyObj, obj).$promise.then(function(obj) {
+          this.data.forEach(function(currentRow) {
+            if(currentRow[this.key] === obj[this.key]) {
+              this.copy(obj,currentRow);
+            }
+          }.bind(this));
+        }.bind(this));        
       };
 
       /**
@@ -136,7 +137,7 @@
       *  Get the current item moving the cursor to the next element
       */
       this.next = function () {
-        if(!this.hasNext())  throw "Dataset Overflor Error";
+        if(!this.hasNext());
         this.active = this.copy(this.data[++cursor],{});
         return this.active;
       };
@@ -336,7 +337,7 @@
   /**
   * Cronus Dataset Directive
   */
-  $app.directive('datatable',['DatasetManager', function (DatasetManager) {
+  $app.directive('datasource',['DatasetManager', function (DatasetManager) {
     return {
       restrict: 'E',
       template: '',

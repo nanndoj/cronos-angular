@@ -2,26 +2,17 @@
 
 <!-- DATASET DEFINITION -->
 	<datatable 
-		name="Carros1"
-		entity="Carros" 
-		key="id" 
-		endpoint="http://localhost:3000/api"
+		name="Pessoa"
+		entity="Pessoa" 
+		key="id"
+		endpoint="api/rest"
 		rows-per-page="20"
 		append="true"
 	></datatable>
 
-	<datatable 
-			name="Acessorios1"
-			entity="Acessorios"
-			key="id" 
-			endpoint="http://localhost:3000/api" 
-			watch="Carros1"
-			watch-filter="idCarro={id}"
-	></datatable>
-
 <!-- END DATASET DEFINITION -->
 
-<!-- VISUAL COMPONENTS -->
+<!-- VISUAL COMPONENTS  -->
 	<div class="sidebar animate" ng-class="{visible: Carros1.editing || Carros1.inserting}">
 		<h2>Carro</h2>
 		<form>
@@ -33,7 +24,7 @@
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputPassword1">Modelo</label>
-		    <input type="text" class="form-control" id="model" ng-model="Carros1.active.sobrenome">
+		    <input type="checkbox" class="form-control" id="model" ng-model="Carros1.active.sobrenome">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputPassword1">Modelo</label>
@@ -44,25 +35,6 @@
 		<button type="button" class="btn btn-default" ng-click="Carros1.cancel()">Fechar</button>
 	</div>
 
-	<div class="sidebar animate" ng-class="{visible: Acessorios1.editing || Acessorios1.inserting}">
-		<h2>Acessório</h2>
-		<form>
-		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Acessorios1.previous()" ng-disabled="!Acessorios1.hasPrevious()">Anterior</button>
-		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Acessorios1.next()" ng-disabled="!Acessorios1.hasNext()">Próximo</button>
-		  <div class="form-group">
-		    <label for="exampleInputEmail1">Nome</label>
-		    <input type="text" class="form-control" id="name" ng-model="Acessorios1.active.nome">
-		  </div>
-		  <div class="form-group">
-		    <label for="exampleInputPassword1">Carro</label>
-		     <select ng-options="item.id as item.nome for item in Carros1.data" ng-model="Acessorios1.active.idCarro">
-		     </select>
-		  </div>
-		</form>
-		<button type="button" class="btn btn-default" ng-click="Acessorios1.post()">Gravar</button>
-		<button type="button" class="btn btn-default" ng-click="Acessorios1.cancel()">Fechar</button>
-	</div>
-	
 	<cronos-table
 		dataset="Carros1"
 	    headers = "['Marca', 'Modelo', 'Ano']"
@@ -70,11 +42,4 @@
 	    onclickRow="">
 	</cronos-table>
 
-	Acessórios: </br>
-	<cronos-table 
-		dataset="Acessorios1"
-		form="AcessoriosForm" 
-	    headers = "['Registro', 'Descricao']"
-	    fields = "['id', 'nome']">
-	</cronos-table>
 <!-- END VISUAL COMPONENTS -->
