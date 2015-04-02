@@ -1,45 +1,44 @@
 <!-- CUSTOM APP CODE START    -->
 
 <!-- DATASET DEFINITION -->
-	<datatable 
+	<datasource 
 		name="Pessoa"
 		entity="Pessoa" 
 		key="id"
 		endpoint="api/rest"
 		rows-per-page="20"
 		append="true"
-	></datatable>
+	></datasource>
 
 <!-- END DATASET DEFINITION -->
 
 <!-- VISUAL COMPONENTS  -->
-	<div class="sidebar animate" ng-class="{visible: Carros1.editing || Carros1.inserting}">
-		<h2>Carro</h2>
+	<div class="sidebar animate" ng-class="{visible: Pessoa.editing || Pessoa.inserting}">
+		<h2>Pessoa</h2>
 		<form>
-		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Carros1.previous()" ng-disabled="!Carros1.hasPrevious()">Anterior</button>
-		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Carros1.next()" ng-disabled="!Carros1.hasNext()">Próximo</button>
+		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Pessoa.previous()" ng-disabled="!Pessoa.hasPrevious()">Anterior</button>
+		  <button type="submit" class="btn btn-sm btn-primary" ng-click="Pessoa.next()" ng-disabled="!Pessoa.hasNext()">Próximo</button>
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Nome</label>
-		    <input type="text" class="form-control" id="name" ng-model="Carros1.active.nome">
+		    <input type="text" class="form-control" id="name" ng-model="Pessoa.active.nome">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputPassword1">Modelo</label>
-		    <input type="checkbox" class="form-control" id="model" ng-model="Carros1.active.sobrenome">
+		    <input type="text" class="form-control" id="model" ng-model="Pessoa.active.sobrenome">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputPassword1">Modelo</label>
-		    <input type="text" class="form-control" id="year" ng-model="Carros1.active.ano">
+		    <input type="text" class="form-control" id="year" ng-model="Pessoa.active.idade">
 		  </div>
 		</form>
-		<button type="button" class="btn btn-default" ng-click="Carros1.post()">Gravar</button>
-		<button type="button" class="btn btn-default" ng-click="Carros1.cancel()">Fechar</button>
+		<button type="button" class="btn btn-default" ng-click="Pessoa.post()">Gravar</button>
+		<button type="button" class="btn btn-default" ng-click="Pessoa.cancel()">Fechar</button>
 	</div>
 
 	<cronos-table
-		dataset="Carros1"
-	    headers = "['Marca', 'Modelo', 'Ano']"
-	    fields = "['nome', 'sobrenome', 'ano']"
-	    onclickRow="">
+		dataset="Pessoa"
+	    headers = "['Nome', 'Sobrenome', 'Idade']"
+	    fields = "['nome', 'sobrenome', 'idade']">
 	</cronos-table>
 
 <!-- END VISUAL COMPONENTS -->
