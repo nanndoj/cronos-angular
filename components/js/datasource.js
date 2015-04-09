@@ -29,6 +29,7 @@
       var cursor = 0;
       var page = 0;
       var service = null;
+      var _savedProps;
 
       this.init = function() {
         this.endpoint = (this.endpoint) ? this.endpoint : "";
@@ -137,7 +138,14 @@
       *  Get the current item moving the cursor to the next element
       */
       this.next = function () {
-        if(!this.hasNext());
+        if(!this.hasNext()) {
+          page++;
+          this.fetch(_savedProps, function(data) {
+            if(!data || data.length == 0) {
+              page--;
+            }
+          });
+        };
         this.active = this.copy(this.data[++cursor],{});
         return this.active;
       };
@@ -181,7 +189,7 @@
       /**
       *  Fetch all data from the server
       */
-      this.fetch = function (props) {
+      this.fetch = function (props, callback) {
         // Get some fake testing data
         var endpoint = (this.endpoint) ? this.endpoint : "";
 
@@ -196,30 +204,41 @@
           props.page = page + 1;
         } 
 
+        _savedProps = props;
+
         var query = resource.query(props);
 
         query.$promise.then(
           // Success Handler
           function (data) {
-            // If prepend property was set. 
-            // Add the new data before the old one
-            if(this.prepend) this.data = data.concat(this.data);  
+            if(data && data.length > 0) {
 
-            // If append property was set. 
-            // Add the new data after the old one
-            if(this.append) this.data = this.data.concat(data);
+              // If prepend property was set. 
+              // Add the new data before the old one
+              if(this.prepend) this.data = data.concat(this.data);  
 
-            // When neither append nor preppend was set
-            // Just replace the current data
-            if(!this.prepend && !this.append) {
-              this.data = data;
-              this.active = {};
+              // If append property was set. 
+              // Add the new data after the old one
+              if(this.append) this.data = this.data.concat(data);
+
+              // When neither append nor preppend was set
+              // Just replace the current data
+              if(!this.prepend && !this.append) {
+                this.data = data;
+                this.active = data[0];
+                cursor = 0;
+              }
+              if(callback) callback(data);
+            } else {
+              if(callback) callback();
             }
 
+            if(callback) callback(data);
           }.bind(this),
           // Error Handler
           function (error) {                 
             console.log(error);
+            if(callback) callback(null);
           }
         );
       }
