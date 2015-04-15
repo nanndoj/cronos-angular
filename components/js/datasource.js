@@ -135,6 +135,13 @@
       };
 
       /**
+      * Check if the object has more itens to iterate
+      */
+      this.order = function (order) {
+        _savedProps.order = order;
+      };
+
+      /**
       *  Get the current item moving the cursor to the next element
       */
       this.next = function () {
@@ -323,7 +330,7 @@
         dts.init();
         this.storeDataset(dts);
 
-        if(!props.lazy && !props.watch) {
+        if(!props.lazy && !(Object.prototype.toString.call(props.watch) === "[object String]")) {
           // Query string object
           var queryObj = {};
           if(dts.rowsPerPage) queryObj.per_page = dts.rowsPerPage;
@@ -332,7 +339,7 @@
           dts.fetch(queryObj);
         }
 
-        if(props.watch) {
+        if(props.watch && Object.prototype.toString.call(props.watch) === "[object String]") {
           this.registerObserver(props.watch, dts);
           dts.watchFilter = props.watchFilter;
         }
