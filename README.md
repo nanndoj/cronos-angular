@@ -1,6 +1,6 @@
 # cronos-angular
 
-THIS REPOSITORY WAS DEPRECATED IN FAVOR OF https://github.com/nanndoj/datasourcejs
+THIS PROJECT WAS DEPRECATED IN FAVOR OF https://github.com/nanndoj/datasourcejs
 
 Multiple components can share a unique Dataset, which is responsible for manage all RestFull requests
 
