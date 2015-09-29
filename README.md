@@ -1,5 +1,6 @@
 # cronos-angular
-Application CRUD ready for AngularJS using RESTFul Services
+
+THIS REPOSITORY WAS DEPRECATED IN FAVOR OF https://github.com/nanndoj/datasourcejs
 
 Multiple components can share a unique Dataset, which is responsible for manage all RestFull requests
 
